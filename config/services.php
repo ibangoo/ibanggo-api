@@ -35,4 +35,27 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'easy_sms' => [
+        // HTTP 请求的超时时间（秒）
+        'timeout' => 5.0,
+
+        // 默认发送配置
+        'default' => [
+            // 网关调用策略，默认：顺序调用
+            'strategy' => \Overtrue\EasySms\Strategies\OrderStrategy::class,
+
+            // 默认可用的发送网关
+            'gateways' => 'aliyun',
+        ],
+        'gateways' => [
+            'errorlog' => [
+                'file' => storage_path().'/logs/easy_sms.log',
+            ],
+            'aliyun' => [
+                'access_key_id' => env('ALI_CLOUD_SMS_ACCESS_KEY_ID'),
+                'access_key_secret' => env('ALI_CLOUD_SMS_SECRET_ACCESS_KEY'),
+                'sign_name' => env('ALI_CLOUD_SMS_SIGN_NAME'),
+            ],
+        ],
+    ],
 ];
