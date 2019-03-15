@@ -52,7 +52,7 @@ class VerificationCodeController extends Controller
             }
         }
 
-        if ($result['aliyun']['result']['Code'] === 'OK' && $result['aliyun']['result']['Message']) {
+        if ($result['aliyun']['result']['Code'] === 'OK' && $result['aliyun']['result']['Message'] === 'OK') {
             // 缓存短信验证码
             $key = 'verification_code_'.str_random(15);
             $expiredAt = now()->addMinutes(config('services.easy_sms.minutes'));
@@ -61,7 +61,10 @@ class VerificationCodeController extends Controller
             // 记录手机号码获取验证码次数
             \Redis::connection()->incr($phone.'_verification_code');
 
-            return $this->responseArray(['key' => $key, 'expired_at' => $expiredAt->toDateTimeString()], 201);
+            return $this->responseArray([
+                'key' => $key,
+                'expired_at' => $expiredAt->toDateTimeString(),
+            ], 201, '验证码已发送，可能会延后，请耐心等待。');
         }
 
         return $this->responseErrorInternal('短信验证码发送失败');

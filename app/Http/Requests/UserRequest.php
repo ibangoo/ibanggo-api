@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\ChinesePhoneNumber;
-use Illuminate\Foundation\Http\FormRequest;
+use Dingo\Api\Http\FormRequest;
 
 class UserRequest extends FormRequest
 {

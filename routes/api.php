@@ -20,5 +20,8 @@ $api->version(config('api.version'), ['namespace' => 'App\Http\Controllers'], fu
     ], function ($api) {
         // 用户注册
         $api->post('users', 'UserController@store')->name('users.store');
+
+        // 用户登录
+        $api->post('authentications', 'AuthenticationController@store')->name('authentications.store');
     });
 });

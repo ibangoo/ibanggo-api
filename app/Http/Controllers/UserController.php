@@ -26,7 +26,7 @@ class UserController extends Controller
         }
 
         try {
-            \DB::transaction(function () use ($request, &$user) {
+            \DB::transaction(function () use ($request, &$account) {
                 $account = Account::query()->create([
                     'phone' => $request->phone,
                     'login_times' => 1,
@@ -35,7 +35,7 @@ class UserController extends Controller
                     'created_with_ip' => $request->ip(),
                 ]);
 
-                $user = User::query()->create([
+                User::query()->create([
                     'account_id' => $account->id,
                     'nickname' => 'ibangoo_'.str_random(6),
                     'avatar' => 'https://iocaffcdn.phphub.org/uploads/images/201710/30/1/TrJS40Ey5k.png',
@@ -45,7 +45,7 @@ class UserController extends Controller
             \Cache::forget($request->key);
 
             // 生成 Json Web Token
-            $data = array_merge($user->toArray(), ['meta' => $this->generateJsonWebToken($user)]);
+            $data = array_merge($account->toArray(), ['meta' => $this->generateJsonWebToken($account)]);
 
             return $this->responseArray($data, 201);
         } catch (\Throwable $throwable) {

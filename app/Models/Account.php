@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+
 
 /**
  * Class Account - 账号模型
  *
  * @package App\Models
  */
-class Account extends Model
+class Account extends Authenticatable implements JWTSubject
 {
     use SoftDeletes;
     /**
@@ -50,4 +52,24 @@ class Account extends Model
     protected $dates = [
         'last_login_at',
     ];
+
+    /**
+     * 定义 payload 的 sub 字段返回内容
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier(): int
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * 在 payload 中增加自定义内容
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims(): array
+    {
+        return [];
+    }
 }
