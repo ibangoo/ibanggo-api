@@ -45,7 +45,7 @@ return [
             'strategy' => \Overtrue\EasySms\Strategies\OrderStrategy::class,
 
             // 默认可用的发送网关
-            'gateways' => 'aliyun',
+            'gateways' => ['aliyun'],
         ],
         'gateways' => [
             'errorlog' => [
@@ -57,5 +57,7 @@ return [
                 'sign_name' => env('ALI_CLOUD_SMS_SIGN_NAME'),
             ],
         ],
+        'default_gateway' => 'aliyun',
+        'minutes' => 10,
     ],
 ];

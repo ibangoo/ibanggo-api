@@ -37,13 +37,13 @@ class EasySmsChannel
             }
 
             return $easySms->send(new PhoneNumber($notifiable->phone, $notifiable->area_code), $parameters);
-        } catch (\Throwable $throwable) {
-            if ($throwable instanceof NoGatewayAvailableException) {
-                $code = $throwable->getException(config('services.easy_sms.default.gateways'))->getCode();
-                $message = $throwable->getException(config('services.easy_sms.default.gateways'))->getMessage();
+        } catch (NoGatewayAvailableException $exception) {
+            $code = $exception->getException(config('services.easy_sms.default_gateway'))->getCode();
+            $message = $exception->getException(config('services.easy_sms.default_gateway'))->getMessage();
 
-                return Log::error('ali_cloud_sms', compact('code', 'message'));
-            }
+            Log::error('ali_cloud_sms', compact('code', 'message'));
+        } finally {
+            Log::info('ali_cloud_sms', ['phone' => $notifiable->area_code.$notifiable->phone,]);
         }
     }
 }
