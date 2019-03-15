@@ -75,4 +75,28 @@ class AuthenticationController extends Controller
             return $this->responseJsonWebToken(auth()->guard()->fromUser($user));
         }
     }
+
+    /**
+     * Json Web Token 刷新
+     *
+     * @return mixed
+     */
+    public function update()
+    {
+        $token = auth()->guard()->refresh();
+
+        return $this->responseJsonWebToken($token);
+    }
+
+    /**
+     * Json Web Token 注销
+     *
+     * @return \Dingo\Api\Http\Response
+     */
+    public function destroy()
+    {
+        auth()->guard()->logout();
+
+        return $this->response->noContent();
+    }
 }

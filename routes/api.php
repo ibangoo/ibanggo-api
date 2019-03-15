@@ -24,4 +24,16 @@ $api->version(config('api.version'), ['namespace' => 'App\Http\Controllers'], fu
         // 用户登录
         $api->post('authentications', 'AuthenticationController@store')->name('authentications.store');
     });
+
+    $api->group([
+        'middleware' => ['api.throttle', 'auth'],
+        'expires' => 1,
+        'limit' => 60,
+    ], function ($api) {
+        // 刷新 Token
+        $api->put('authentications', 'AuthenticationController@update')->name('authentications.update');
+
+        // 注销 Token
+        $api->delete('authentications', 'AuthenticationController@destroy')->name('authentications.destroy');
+    });
 });
