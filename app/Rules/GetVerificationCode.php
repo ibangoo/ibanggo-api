@@ -30,7 +30,7 @@ class GetVerificationCode implements Rule
         $times = \Redis::connection()->get($value.'_verification_code');
 
         if ($times === null) {
-            \Redis::connection()->set($value.'_verification_code', 0);
+            \Redis::connection()->set($value.'_verification_code', 0, 'EX', 60 * 60);
         } elseif ($times >= 4) {
             return false;
         }

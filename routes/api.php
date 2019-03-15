@@ -7,9 +7,18 @@ $api->version(config('api.version'), ['namespace' => 'App\Http\Controllers'], fu
     $api->group([
         'middleware' => 'api.throttle',
         'expires' => 1,
-        'limit' => 60,
+        'limit' => 5,
     ], function ($api) {
         // 短信验证码
         $api->post('verification-codes', 'VerificationCodeController@store')->name('verification_code.store');
+    });
+
+    $api->group([
+        'middleware' => 'api.throttle',
+        'expires' => 1,
+        'limit' => 60,
+    ], function ($api) {
+        // 用户注册
+        $api->post('users', 'UserController@store')->name('users.store');
     });
 });
