@@ -9,8 +9,11 @@ $api->version(config('api.version'), ['namespace' => 'App\Http\Controllers'], fu
         'expires' => 1,
         'limit' => 5,
     ], function ($api) {
-        // 短信验证码
+        // 发送短信验证码
         $api->post('verification-codes', 'VerificationCodeController@store')->name('verification_code.store');
+
+        // 验证短信验证码
+        $api->delete('verification-codes', 'VerificationCodeController@check')->name('verification_code.check');
     });
 
     $api->group([

@@ -69,4 +69,34 @@ class VerificationCodeController extends Controller
 
         return $this->responseErrorInternal('短信验证码发送失败');
     }
+
+    /**
+     * 验证短信验证码
+     *
+     * @param VerificationCodeRequest $request
+     *
+     * @return \Dingo\Api\Http\Response|mixed
+     */
+    public function check(VerificationCodeRequest $request)
+    {
+        // 获取缓存数据
+        $data = \Cache::get($request->key);
+
+        if (!$data) {
+            return $this->responseErrorNotFound('验证码已过期');
+        }
+
+        if (!hash_equals((string)$data['code'], $request->code)) {
+            return $this->responseErrorInvalidArgument('手机号码或验证码错误');
+        }
+
+        if (!hash_equals((string)$data['phone'], $request->phone)) {
+            return $this->responseErrorInvalidArgument('手机号码或验证码错误');
+        }
+
+        // 删除缓存
+        \Cache::forget($request->key);
+
+        return $this->response->noContent();
+    }
 }

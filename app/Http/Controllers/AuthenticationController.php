@@ -64,7 +64,7 @@ class AuthenticationController extends Controller
             }
 
             // 查询用户
-            if (!$user = Account::query()->where(['phone' => $request->phone])->first()) {
+            if (!$account = Account::query()->where(['phone' => $request->phone])->first()) {
                 return $this->responseErrorNotFound('手机号码或验证码错误');
             }
 
@@ -72,7 +72,7 @@ class AuthenticationController extends Controller
             \Cache::forget($request->key);
 
             // 响应令牌
-            return $this->responseJsonWebToken(auth()->guard()->fromUser($user));
+            return $this->responseJsonWebToken(auth()->guard()->fromUser($account));
         }
     }
 
@@ -91,7 +91,7 @@ class AuthenticationController extends Controller
     /**
      * Json Web Token 注销
      *
-     * @return \Dingo\Api\Http\Response
+     * @return \Dingo\Api\Http\Response | mixed
      */
     public function destroy()
     {
