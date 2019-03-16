@@ -38,5 +38,8 @@ $api->version(config('api.version'), ['namespace' => 'App\Http\Controllers'], fu
 
         // 注销 Token
         $api->delete('authentications', 'AuthenticationController@destroy')->name('authentications.destroy');
+
+        // 设置密码、忘记、修改密码
+        $api->put('passwords', 'PasswordController@update')->name('passwords.update');
     });
 });

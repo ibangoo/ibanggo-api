@@ -14,15 +14,15 @@ class UserController extends Controller
         $data = \Cache::get($request->key);
 
         if (!$data) {
-            return $this->responseErrorNotFound('验证码已过期');
+            return $this->responseNotFound('验证码已过期');
         }
 
         if (!hash_equals((string)$data['code'], $request->code)) {
-            return $this->responseErrorInvalidArgument('验证码错误');
+            return $this->responseInvalidArgument('验证码错误');
         }
 
         if (!hash_equals((string)$data['phone'], $request->phone)) {
-            return $this->responseErrorInvalidArgument('手机号码错误');
+            return $this->responseInvalidArgument('手机号码错误');
         }
 
         try {
@@ -49,7 +49,7 @@ class UserController extends Controller
 
             return $this->responseArray($data, 201);
         } catch (\Throwable $throwable) {
-            return $this->responseErrorInternal('用户注册失败');
+            return $this->responseInternal('用户注册失败');
         }
     }
 }

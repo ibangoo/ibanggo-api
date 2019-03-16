@@ -48,7 +48,7 @@ class VerificationCodeController extends Controller
                 }
                 \Log::error('ali_cloud_sms', compact('code', 'message'));
 
-                return $this->responseErrorInternal($message);
+                return $this->responseInternal($message);
             }
         }
 
@@ -67,7 +67,7 @@ class VerificationCodeController extends Controller
             ], 201, '验证码已发送，可能会延后，请耐心等待。');
         }
 
-        return $this->responseErrorInternal('短信验证码发送失败');
+        return $this->responseInternal('短信验证码发送失败');
     }
 
     /**
@@ -83,15 +83,15 @@ class VerificationCodeController extends Controller
         $data = \Cache::get($request->key);
 
         if (!$data) {
-            return $this->responseErrorNotFound('验证码已过期');
+            return $this->responseNotFound('验证码已过期');
         }
 
         if (!hash_equals((string)$data['code'], $request->code)) {
-            return $this->responseErrorInvalidArgument('手机号码或验证码错误');
+            return $this->responseInvalidArgument('手机号码或验证码错误');
         }
 
         if (!hash_equals((string)$data['phone'], $request->phone)) {
-            return $this->responseErrorInvalidArgument('手机号码或验证码错误');
+            return $this->responseInvalidArgument('手机号码或验证码错误');
         }
 
         // 删除缓存

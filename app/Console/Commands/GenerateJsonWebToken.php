@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\User;
+use App\Models\Account;
 use Illuminate\Console\Command;
 
 class GenerateJsonWebToken extends Command
@@ -37,18 +37,18 @@ class GenerateJsonWebToken extends Command
      */
     public function handle()
     {
-        $userId = $this->ask('请输入用户 id');
+        $account = $this->ask('请输入用户 id');
 
-        if (!(int)$userId) {
+        if (!(int)$account) {
             return $this->error('请输入合法的用户 id');
         }
 
-        $user = User::query()->first();
-        if (!$user) {
+        $account = Account::query()->first();
+        if (!$account) {
             return $this->error('用户不存在');
         }
 
         $minutes = 60 * 24 * 365;
-        $this->info(auth()->guard()->setTTL($minutes)->fromUser($user));
+        $this->info(auth()->guard()->setTTL($minutes)->fromUser($account));
     }
 }
