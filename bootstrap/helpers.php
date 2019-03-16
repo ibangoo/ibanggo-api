@@ -18,3 +18,17 @@ if (!function_exists('transform_error_message')) {
         return $message;
     }
 }
+
+if (!function_exists('get_request_parameters')) {
+    /**
+     * 获取 HTTP Request 特定参数
+     *
+     * @param $request
+     *
+     * @return array
+     */
+    function get_request_parameters($request)
+    {
+        return $request->only(array_keys($request->rules()));
+    }
+}

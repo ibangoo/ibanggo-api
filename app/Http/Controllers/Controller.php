@@ -19,6 +19,16 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests, Helpers;
 
     /**
+     * @param $message
+     * @param $code
+     *
+     * @return mixed
+     */
+    public function responseError($message, $code)
+    {
+        return $this->response->error($message, $code);
+    }
+    /**
      * 响应服务端错误 500
      *
      * @param $message
@@ -31,7 +41,7 @@ class Controller extends BaseController
     }
 
     /**
-     * 响应客户端参数错误 422
+     * 响应客户端错误 422
      *
      * @param $message
      *
@@ -43,7 +53,19 @@ class Controller extends BaseController
     }
 
     /**
-     * 响应客户端参数错误 404
+     * 响应客户端错误 403
+     *
+     * @param $message
+     *
+     * @return mixed
+     */
+    public function responseForbidden($message)
+    {
+        return $this->response->errorForbidden($message);
+    }
+
+    /**
+     * 响应客户端错误 404
      *
      * @param $message
      *

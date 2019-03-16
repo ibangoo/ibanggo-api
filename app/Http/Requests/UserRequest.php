@@ -20,23 +20,54 @@ class UserRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
+     * @throws \InvalidArgumentException
+     *
      * @return array
      */
     public function rules(): array
     {
-        return [
-            'phone' => ['required', new ChinesePhoneNumber, 'unique:accounts'],
-            'key' => ['required', 'string'],
-            'code' => ['required', 'numeric', 'digits:6'],
-        ];
+        $rules = [];
+        switch ($this->route()->getName()) {
+            case 'users.store':
+                $rules = [
+                    'phone' => ['required', new ChinesePhoneNumber, 'unique:accounts'],
+                    'key' => ['required', 'string'],
+                    'code' => ['required', 'numeric', 'digits:6'],
+                ];
+                break;
+            case 'users.update':
+                switch ($this->header(env('API_X_HTTP_REQUEST_METHOD'))) {
+                    case 'update_phone':
+                        $rules = [
+                            'phone' => ['required', new ChinesePhoneNumber, 'unique:accounts'],
+                            'key' => ['required', 'string'],
+                            'code' => ['required', 'numeric', 'digits:6'],
+                        ];
+                        break;
+                    default:
+                        throw new \InvalidArgumentException('Bad Request', 400);
+                        break;
+                }
+
+                break;
+        }
+
+        return $rules;
     }
 
-    public function attributes()
+    public function attributes(): array
     {
         return [
             'phone' => '手机号码',
             'key' => '短信验证码凭证',
             'code' => '短信验证码',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'phone.unique' => '该手机号码已绑定其他账号',
         ];
     }
 }
