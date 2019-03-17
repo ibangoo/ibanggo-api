@@ -3,6 +3,9 @@
 $api = app(Dingo\Api\Routing\Router::class);
 
 $api->version(config('api.version'), ['namespace' => 'App\Http\Controllers'], function ($api) {
+    $api->get('/', function () {
+        return response()->json(['version' => config('api.version')]);
+    });
 
     $api->group([
         'middleware' => 'api.throttle',
