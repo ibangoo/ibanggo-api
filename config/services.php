@@ -60,4 +60,10 @@ return [
         'default_gateway' => 'aliyun',
         'minutes' => 10,
     ],
+
+    'weixinweb' => [
+        'client_id' => env('WECHAT_WEB_APP_ID'),
+        'client_secret' => env('WECHAT_WEB_APP_SECRET'),
+        'redirect' => env('WECHAT_WEB_REDIRECT_URI'),
+    ],
 ];
