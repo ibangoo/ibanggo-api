@@ -29,6 +29,9 @@ $api->version(config('api.version'), ['namespace' => 'App\Http\Controllers'], fu
 
         // 登录认证
         $api->post('authentications', 'AuthenticationController@store')->name('authentications.store');
+
+        // 第三方登录认证
+        $api->post('third-party-authentications', 'ThirdPartyAuthenticationController@store')->name('third_party_authentication.store');
     });
 
     $api->group([
