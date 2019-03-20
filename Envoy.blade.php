@@ -2,6 +2,7 @@
 
 @task('deploy')
 cd /www/ibanggo-api
-git pull origin develop
+git fetch --all && git reset --hard origin/develop
+composer install
 php artisan migrate
 @endtask
