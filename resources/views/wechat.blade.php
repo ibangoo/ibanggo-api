@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Laravel - QQ 登录</title>
+    <title>Laravel - 微信 登录</title>
     <style>
         html, body {
             background-color: #fff;

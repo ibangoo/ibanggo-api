@@ -115,7 +115,7 @@ class ThirdPartyAuthenticationController extends Controller
                 }
             });
 
-            return $this->responseJsonWebToken(auth()->guard()->fromUser($openPlatformAccount->account));
+            return $this->responseJsonWebToken(auth()->guard()->fromUser($account));
         } catch (\Throwable $throwable) {
             return $this->responseInternal(transform_error_message($throwable->getMessage(), '用户第三方登录失败'));
         }
