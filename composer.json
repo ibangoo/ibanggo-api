@@ -15,7 +15,8 @@
         "predis/predis": "^1.1",
         "socialiteproviders/qq": "^3.0",
         "socialiteproviders/weixin-web": "^3.0",
-        "tymon/jwt-auth": "1.0.0-rc.2"
+        "tymon/jwt-auth": "1.0.0-rc.2",
+        "ext-json": "*"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.6",

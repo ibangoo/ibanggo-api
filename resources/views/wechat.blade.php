@@ -73,11 +73,9 @@
 
     <div class="content">
         <div class="title m-b-md">
-            Laravel
-        </div>
-
-        <div class="links">
-            <a href="{{ route('wechat.login') }}">微信登录</a>
+            <div class="links">
+                <a href="{{ route('wechat.login') }}">微信登录</a>
+            </div>
         </div>
     </div>
 </div>

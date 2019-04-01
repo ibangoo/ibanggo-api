@@ -31,19 +31,18 @@ class ThirdPartyAuthenticationController extends Controller
         // 根据当前第三方平台类型做特殊业务处理
         switch ($request->type) {
             case 'wechat_open_platform':
-                $openId = $oauthUser->offsetExists('openid') ? $oauthUser->offsetGet('openid') : null;
-                $officialAccount = ThirdPartyPlatformAccount::query()
-                    ->where('platform_id', $openId)
-                    ->where('type', $request->type)
-                    ->first();
-                if ($officialAccount) {
-                    $token = auth()->guard()->fromUser($officialAccount->account);
+                $openid = $oauthUser->id ?? null;
+                $unionId = $oauthUser->user['unionid'] ?? null;
 
-                    return $this->responseJsonWebToken($token);
-                }
+                $avatar = $oauthUser->avatar ?? null;
+                $nickname = $oauthUser->nickname ?? null;
                 break;
             case 'qq':
-                $openId = null;
+                $openid = null;
+                $unionId = $oauthUser->id ?? null;
+
+                $avatar = $oauthUser->avatar ?? null;
+                $nickname = $oauthUser->nickname ?? null;
                 break;
             default:
                 return $this->responseInternal('参数错误，暂不支持此第三方平台登录');
@@ -51,7 +50,6 @@ class ThirdPartyAuthenticationController extends Controller
         }
 
         // 所有平台统一根据 unionid 获取用户信息
-        $unionId = $oauthUser->offsetExists('unionid') ? $oauthUser->offsetGet('unionid') : null;
         $openPlatformAccount = ThirdPartyPlatformAccount::query()
             ->where('platform_id', $unionId)
             ->where('type', $request->type)
@@ -62,9 +60,21 @@ class ThirdPartyAuthenticationController extends Controller
             return $this->responseJsonWebToken($token);
         }
 
+        // 没有 unionid,则获取 openid 获取用户信息
+        if ($openid) {
+            $openPlatformAccount = ThirdPartyPlatformAccount::query()
+                ->where('platform_id', $openid)
+                ->where('type', $request->type)
+                ->first();
+            if ($openPlatformAccount) {
+                $token = auth()->guard()->fromUser($openPlatformAccount->account);
+
+                return $this->responseJsonWebToken($token);
+            }
+        }
 
         try {
-            DB::transaction(function () use ($request, $oauthUser, $unionId, $openId, $accessToken, &$account) {
+            DB::transaction(function () use ($request, $oauthUser, $unionId, $accessToken, &$account, $nickname, $avatar, $openid) {
                 // 创建账号
                 $account = Account::query()->create([
                     'last_login_at' => now(),
@@ -72,46 +82,40 @@ class ThirdPartyAuthenticationController extends Controller
                     'created_with_ip' => $request->ip(),
                 ]);
 
-                // 创建用户
-                $nickname = $oauthUser->offsetExists('nickname') ? $oauthUser->offsetGet('nickname') : null;
-                $avatar = $oauthUser->offsetExists('headimgurl') ? $oauthUser->offsetGet('headimgurl') : null;
                 $user = User::query()->create([
                     'account_id' => $account->id,
                     'nickname' => $nickname,
                     'avatar' => $avatar,
                 ]);
 
-                // 创建第三方账号
-                if ($unionId) {
+                ThirdPartyPlatformAccount::query()->create([
+                    'account_id' => $account->id,
+                    'resource_id' => $user->id,
+                    'resource_type' => get_class($user),
+                    'platform_id' => $unionId,
+                    'platform_token' => $accessToken,
+                    'type' => $request->type,
+                    'nickname' => $nickname,
+                    'avatar' => $avatar,
+                    'extra' => json_encode($oauthUser->user ?: []),
+                ]);
+
+                if ($openid) {
                     ThirdPartyPlatformAccount::query()->create([
                         'account_id' => $account->id,
                         'resource_id' => $user->id,
                         'resource_type' => get_class($user),
-                        'platform_id' => $unionId,
+                        'platform_id' => $openid,
                         'platform_token' => $accessToken,
                         'type' => $request->type,
                         'nickname' => $nickname,
                         'avatar' => $avatar,
-                        'extra' => json_encode($oauthUser->user ?: []),
-                    ]);
-                }
-
-                if ($openId) {
-                    ThirdPartyPlatformAccount::query()->create([
-                        'account_id' => $account->id,
-                        'resource_id' => $user->id,
-                        'resource_type' => get_class($user),
-                        'platform_id' => $openId,
-                        'platform_token' => $accessToken,
-                        'type' => 'wechat_official_account',
-                        'nickname' => $nickname,
-                        'avatar' => $avatar,
-                        'extra' => json_encode($oauthUser->user ?: []),
+                        'extra' => $request->type.'_openid',
                     ]);
                 }
             });
 
-            return $this->responseJsonWebToken($account);
+            return $this->responseJsonWebToken(auth()->guard()->fromUser($openPlatformAccount->account));
         } catch (\Throwable $throwable) {
             return $this->responseInternal(transform_error_message($throwable->getMessage(), '用户第三方登录失败'));
         }

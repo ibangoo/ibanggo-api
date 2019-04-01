@@ -16,8 +16,8 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('account_id')->unique()->comment('账号 id');
-            $table->string('nickname')->comment('用户昵称');
-            $table->string('avatar')->comment('头像');
+            $table->string('nickname')->nullable()->comment('用户昵称');
+            $table->string('avatar')->nullable()->comment('头像');
             $table->enum('gender', ['male', 'female', 'unknown'])->default('unknown')->comment('性别');
             $table->timestamps();
             $table->softDeletes();

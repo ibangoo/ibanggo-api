@@ -73,11 +73,9 @@
 
     <div class="content">
         <div class="title m-b-md">
-            Laravel
-        </div>
-
-        <div class="links">
-            <a href="{{ route('qq.login') }}">QQ登录</a>
+            <div class="links">
+                <a href="{{ route('qq.login') }}">QQ登录</a>
+            </div>
         </div>
     </div>
 </div>
