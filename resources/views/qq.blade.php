@@ -73,9 +73,7 @@
 
     <div class="content">
         <div class="title m-b-md">
-            <div class="links">
-                <a href="{{ route('qq.login') }}">QQ登录</a>
-            </div>
+            <a href="{{ route('qq.login') }}">QQ登录</a>
         </div>
     </div>
 </div>

@@ -73,9 +73,7 @@
 
     <div class="content">
         <div class="title m-b-md">
-            <div class="links">
-                <a href="{{ route('wechat.login') }}">微信登录</a>
-            </div>
+            <a href="{{ route('wechat.login') }}">微信登录</a>
         </div>
     </div>
 </div>
