@@ -19,7 +19,7 @@ class ThirdPartyPlatformAccount extends Model
     public static $typeMap = [
         'wechat_open_platform' => '微信开放平台',
         'wechat_official_account' => '微信公众平台',
-        'qq' => 'QQ',
+        'qq' => '腾讯开放平台',
     ];
     /**
      * @var array
