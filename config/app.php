@@ -178,6 +178,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         // EasySms
         App\Providers\EasySmsServiceProvider::class,
+        // Social Login
+        SocialiteProviders\Manager\ServiceProvider::class,
     ],
 
     /*

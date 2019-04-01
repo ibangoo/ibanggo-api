@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Laravel - QQ 登录</title>
+    <title>Laravel - 微信登录</title>
     <style>
         html, body {
             background-color: #fff;
@@ -82,7 +82,7 @@
             <a href="https://laravel-news.com">News</a>
             <a href="https://forge.laravel.com">Forge</a>
             <a href="https://github.com/laravel/laravel">GitHub</a>
-            <a href="https://github.com/laravel/laravel">微信登录</a>
+            <a href="https://github.com/laravel/laravel">QQ登录</a>
         </div>
     </div>
 </div>
