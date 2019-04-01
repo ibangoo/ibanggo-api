@@ -43,10 +43,10 @@
             font-size: 84px;
         }
 
-        .links > a {
+        .m-b-md > a {
             color: #636b6f;
             padding: 0 25px;
-            font-size: 12px;
+            font-size: 24px;
             font-weight: 600;
             letter-spacing: .1rem;
             text-decoration: none;
