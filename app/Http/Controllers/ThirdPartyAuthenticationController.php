@@ -12,12 +12,13 @@ class ThirdPartyAuthenticationController extends Controller
 {
     public function store(ThirdPartyAuthenticationRequest $request)
     {
+        // 判断是否支持当前第三方平台
         $keys = array_keys(ThirdPartyPlatformAccount::$typeMap);
-
         if (!in_array($request->type, $keys, true)) {
-            return $this->responseBadRequest('暂不支持此第三方平台登录');
+            return $this->responseBadRequest('暂不支持当前第三方平台登录');
         }
 
+        // 根据 code 获取 access_token，根据 access_token 获取用户信息
         $driver = \Socialite::driver(ThirdPartyPlatformAccount::$driverMap[$request->type]);
         try {
             $response = $driver->getAccessTokenResponse($request->code);
@@ -27,6 +28,7 @@ class ThirdPartyAuthenticationController extends Controller
             return $this->responseBadRequest('参数错误，无法获取用户信息');
         }
 
+        // 根据当前第三方平台类型做特殊业务处理
         switch ($request->type) {
             case 'wechat_open_platform':
                 $openId = $oauthUser->offsetExists('openid') ? $oauthUser->offsetGet('openid') : null;
@@ -41,12 +43,14 @@ class ThirdPartyAuthenticationController extends Controller
                 }
                 break;
             case 'qq':
+                $openId = null;
                 break;
             default:
                 return $this->responseInternal('参数错误，暂不支持此第三方平台登录');
                 break;
         }
 
+        // 所有平台统一根据 unionid 获取用户信息
         $unionId = $oauthUser->offsetExists('unionid') ? $oauthUser->offsetGet('unionid') : null;
         $openPlatformAccount = ThirdPartyPlatformAccount::query()
             ->where('platform_id', $unionId)
@@ -63,8 +67,8 @@ class ThirdPartyAuthenticationController extends Controller
             DB::transaction(function () use ($request, $oauthUser, $unionId, $openId, $accessToken, &$account) {
                 // 创建账号
                 $account = Account::query()->create([
-                    'last_login_ip' => $request->ip(),
                     'last_login_at' => now(),
+                    'last_login_ip' => $request->ip(),
                     'created_with_ip' => $request->ip(),
                 ]);
 

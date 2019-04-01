@@ -27,7 +27,7 @@ class ThirdPartyPlatformAccount extends Model
     public static $driverMap = [
         'wechat_open_platform' => 'weixinweb',
         'wechat_official_account' => 'weixin',
-        'qq' => 'QQ',
+        'qq' => 'qq',
     ];
     /**
      * @var array
